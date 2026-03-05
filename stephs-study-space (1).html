@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👁️ Steph's Study Space</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a1628;
+      --surface: #112240;
+      --surface2: #1a3050;
+      --accent: #e63946;
+      --teal: #2ec4b6;
+      --yellow: #ffd60a;
+      --text: #e8f4f8;
+      --muted: #7a9bbf;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 36px;
+      background: rgba(10,22,40,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(46,196,182,0.12);
+    }
+    .nav-logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.35rem; color: var(--teal);
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer;
+    }
+    .blink-eye { display: inline-block; animation: blink 4s infinite; }
+    @keyframes blink {
+      0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(0.08)}
+    }
+    .nav-links { display: flex; gap: 6px; align-items: center; }
+    .nav-btn {
+      background: transparent; border: 1px solid transparent;
+      color: var(--muted); font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem; font-weight: 700; padding: 7px 16px;
+      border-radius: 50px; cursor: pointer; transition: all .2s;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(46,196,182,0.1); border-color: var(--teal); color: var(--teal);
+    }
+    .nav-btn.api-btn {
+      background: rgba(230,57,70,0.1); border-color: rgba(230,57,70,0.4); color: var(--accent);
+    }
+    .nav-btn.api-btn:hover { background: rgba(230,57,70,0.2); }
+
+    /* ── SECTIONS ── */
+    section { min-height: 100vh; padding: 100px 36px 70px; }
+    .inner { max-width: 880px; margin: 0 auto; }
+
+    /* ── FLOATING BG LETTERS ── */
+    .float-bg {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .fl {
+      position: absolute; font-family: 'Space Mono', monospace;
+      color: rgba(46,196,182,0.045); animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%{transform:translateY(110vh) rotate(0deg);opacity:0}
+      8%{opacity:1} 92%{opacity:1}
+      100%{transform:translateY(-120px) rotate(360deg);opacity:0}
+    }
+
+    /* ── HOME ── */
+    #home {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      background:
+        radial-gradient(ellipse at 25% 55%, rgba(46,196,182,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 25%, rgba(230,57,70,0.05) 0%, transparent 45%);
+    }
+    .hero { text-align: center; max-width: 680px; }
+    .big-eye-wrap { font-size: 5.5rem; margin-bottom: 18px; display: inline-block; }
+    .hero h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.4rem, 6vw, 3.8rem); line-height: 1.1; margin-bottom: 14px;
+    }
+    .hero h1 .hi { color: var(--teal); }
+    .hero h1 .name-h { color: var(--yellow); }
+    .hero p { font-size: 1.1rem; color: var(--muted); margin-bottom: 36px; line-height: 1.65; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal), #1aa89f);
+      color: #0a1628; font-family: 'Nunito', sans-serif;
+      font-weight: 800; font-size: 1rem; padding: 13px 28px;
+      border: none; border-radius: 50px; cursor: pointer;
+      transition: all .2s; box-shadow: 0 4px 18px rgba(46,196,182,0.28);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,196,182,0.4); }
+    .btn-secondary {
+      background: rgba(230,57,70,0.12); color: var(--accent);
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem;
+      padding: 13px 28px; border: 2px solid var(--accent); border-radius: 50px;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-secondary:hover { background: rgba(230,57,70,0.22); transform: translateY(-2px); }
+
+    .made-with {
+      margin-top: 48px; font-size: 0.85rem; color: var(--muted);
+      opacity: 0.7;
+    }
+    .made-with .h { color: var(--accent); }
+    .made-with .n { color: var(--teal); font-weight: 800; }
+
+    /* ── SECTION HEADER ── */
+    .sec-title {
+      font-family: 'Fredoka One', cursive; font-size: 2.3rem; margin-bottom: 6px;
+    }
+    .sec-title span { color: var(--teal); }
+    .sec-sub { color: var(--muted); margin-bottom: 32px; font-size: 1.02rem; }
+
+    /* ── QUIZ ── */
+    #quiz { position: relative; z-index: 1; }
+    .upload-zone {
+      border: 2px dashed rgba(46,196,182,0.35); border-radius: var(--radius);
+      padding: 44px; text-align: center;
+      background: rgba(46,196,182,0.025); cursor: pointer;
+      transition: all .2s; position: relative; margin-bottom: 20px;
+    }
+    .upload-zone:hover, .upload-zone.over {
+      border-color: var(--teal); background: rgba(46,196,182,0.07);
+    }
+    .upload-zone input {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 2.8rem; margin-bottom: 10px; }
+    .upload-zone h3 { font-family: 'Fredoka One', cursive; font-size: 1.3rem; margin-bottom: 6px; }
+    .upload-zone p { color: var(--muted); font-size: 0.88rem; }
+
+    .file-info {
+      background: var(--surface); border-radius: 10px; padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+      border: 1px solid rgba(46,196,182,0.18);
+    }
+    .fi-icon { font-size: 1.5rem; }
+    .fi-name { font-weight: 700; font-size: 0.95rem; }
+    .fi-size { color: var(--muted); font-size: 0.8rem; }
+    .fi-clear {
+      margin-left: auto; background: transparent; border: none;
+      color: var(--muted); cursor: pointer; font-size: 1.1rem; transition: color .15s;
+    }
+    .fi-clear:hover { color: var(--accent); }
+
+    .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .opt-group label {
+      display: block; font-weight: 800; margin-bottom: 7px;
+      color: var(--teal); font-size: 0.78rem; text-transform: uppercase; letter-spacing: .6px;
+    }
+    .opt-group select {
+      width: 100%; background: var(--surface);
+      border: 1px solid rgba(46,196,182,0.18); border-radius: 10px;
+      color: var(--text); font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; padding: 10px 13px; cursor: pointer;
+    }
+    .opt-group select:focus { outline: none; border-color: var(--teal); }
+
+    .gen-btn {
+      width: 100%; background: linear-gradient(135deg, var(--teal), #1aa89f);
+      color: #0a1628; font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 1.1rem; padding: 15px; border: none; border-radius: 12px;
+      cursor: pointer; transition: all .2s; box-shadow: 0 4px 18px rgba(46,196,182,0.25);
+    }
+    .gen-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(46,196,182,0.4); }
+    .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 48px; display: none; }
+    .loading.on { display: block; }
+    .spin {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(46,196,182,0.18); border-top-color: var(--teal);
+      border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: var(--muted); font-style: italic; }
+
+    /* Error */
+    .err-box {
+      background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.3);
+      border-radius: 10px; padding: 13px 16px; color: #ff8c8c;
+      font-size: 0.9rem; margin: 12px 0; display: none;
+    }
+    .err-box.on { display: block; }
+
+    /* Quiz cards */
+    .quiz-wrap { display: none; }
+    .quiz-wrap.on { display: block; }
+    .quiz-top {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .q-progress { font-family: 'Space Mono', monospace; font-size: 0.88rem; color: var(--teal); }
+    .q-score {
+      background: var(--surface); border: 1px solid rgba(255,214,10,.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-family: 'Space Mono', monospace; color: var(--yellow); font-size: 0.88rem;
+    }
+    .q-card {
+      background: var(--surface); border-radius: var(--radius); padding: 26px;
+      margin-bottom: 14px; border: 1px solid rgba(46,196,182,0.08);
+      animation: slideIn .3s ease;
+    }
+    @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .q-num {
+      font-family: 'Space Mono', monospace; font-size: 0.75rem;
+      color: var(--teal); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .q-text { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; line-height: 1.5; }
+    .q-options { display: flex; flex-direction: column; gap: 9px; }
+    .q-opt {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; color: var(--text); font-family: 'Nunito', sans-serif;
+      font-size: 0.92rem; font-weight: 600; padding: 11px 15px;
+      cursor: pointer; text-align: left; transition: all .15s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .q-opt:hover:not(:disabled) { background: rgba(46,196,182,0.1); border-color: var(--teal); }
+    .q-opt.correct { background: rgba(46,196,182,0.2) !important; border-color: var(--teal) !important; color: var(--teal); }
+    .q-opt.wrong { background: rgba(230,57,70,0.2) !important; border-color: var(--accent) !important; color: #ff8c8c; }
+    .q-label {
+      background: rgba(255,255,255,0.09); border-radius: 6px;
+      width: 25px; height: 25px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Mono', monospace; font-size: 0.7rem; flex-shrink: 0;
+    }
+    .q-explain {
+      margin-top: 12px; padding: 11px 14px;
+      background: rgba(46,196,182,0.07); border-left: 3px solid var(--teal);
+      border-radius: 6px; font-size: 0.88rem; color: var(--muted);
+      display: none; line-height: 1.55;
+    }
+    .q-explain.on { display: block; }
+
+    .results-card {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 44px; text-align: center; border: 1px solid rgba(255,214,10,0.18);
+      animation: slideIn .3s ease;
+    }
+    .res-emoji { font-size: 4rem; margin-bottom: 14px; }
+    .res-score { font-family: 'Fredoka One', cursive; font-size: 3.2rem; color: var(--yellow); }
+    .res-label { font-size: 1.1rem; font-weight: 700; margin: 4px 0 10px; }
+    .res-msg { color: var(--muted); margin-bottom: 28px; }
+
+    /* ── GAMES ── */
+    #games { position: relative; z-index: 1; }
+    .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .g-card {
+      background: var(--surface); border-radius: var(--radius); padding: 26px;
+      border: 1px solid rgba(255,255,255,0.05); transition: all .2s;
+    }
+    .g-card:hover { border-color: rgba(46,196,182,0.25); }
+    .g-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .g-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.35rem; margin-bottom: 6px; }
+    .g-card > p { color: var(--muted); font-size: 0.88rem; margin-bottom: 18px; }
+
+    /* Snellen Sprint */
+    .snellen-display {
+      background: #f0f0e0; border-radius: 12px;
+      height: 140px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px; overflow: hidden; position: relative;
+    }
+    .snellen-letter {
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      color: #111; transition: all .08s linear;
+    }
+    .timer-bar { height: 4px; background: rgba(46,196,182,0.15); border-radius: 2px; margin-bottom: 10px; }
+    .timer-fill { height: 100%; border-radius: 2px; transition: width .05s linear, background .1s; }
+    .snellen-input-row { display: flex; gap: 8px; }
+    .snellen-input {
+      flex: 1; background: var(--bg); border: 2px solid rgba(46,196,182,0.3);
+      border-radius: 10px; color: var(--text); font-family: 'Space Mono', monospace;
+      font-size: 1.6rem; padding: 10px; text-align: center;
+      text-transform: uppercase; letter-spacing: 4px;
+    }
+    .snellen-input:focus { outline: none; border-color: var(--teal); }
+    .sn-stats { display: flex; gap: 10px; margin-top: 10px; }
+    .sn-pill {
+      background: var(--bg); border-radius: 50px; padding: 5px 12px;
+      font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--muted);
+    }
+    .sn-results { text-align: center; padding: 10px 0; }
+    .sn-results .big-num { font-family: 'Fredoka One', cursive; font-size: 2.4rem; color: var(--yellow); }
+    .sn-results .sn-msg { color: var(--muted); font-size: 0.9rem; margin: 6px 0 16px; }
+
+    /* Trivia Game */
+    .t-progress { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
+    .t-question { font-size: 0.98rem; font-weight: 700; margin-bottom: 14px; line-height: 1.5; }
+    .t-options { display: flex; flex-direction: column; gap: 7px; }
+    .t-opt {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; color: var(--text); font-family: 'Nunito', sans-serif;
+      font-weight: 600; font-size: 0.85rem; padding: 9px 13px;
+      cursor: pointer; text-align: left; transition: all .15s;
+    }
+    .t-opt:hover:not(:disabled) { background: rgba(46,196,182,0.1); border-color: var(--teal); }
+    .t-opt.correct { background: rgba(46,196,182,0.2) !important; border-color: var(--teal) !important; color: var(--teal); }
+    .t-opt.wrong { background: rgba(230,57,70,0.2) !important; border-color: var(--accent) !important; }
+    .t-fact {
+      margin-top: 10px; font-size: 0.8rem; color: var(--muted);
+      background: rgba(46,196,182,0.06); border-left: 2px solid var(--teal);
+      padding: 8px 12px; border-radius: 5px; display: none; line-height: 1.5;
+    }
+    .t-fact.on { display: block; }
+    .t-score-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .t-score-badge {
+      font-family: 'Space Mono', monospace; font-size: 0.78rem;
+      color: var(--yellow); background: var(--bg); border-radius: 50px; padding: 4px 12px;
+    }
+    .t-results { text-align: center; padding: 8px 0; }
+    .t-results .big-num { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--yellow); }
+    .t-results .t-msg { color: var(--muted); font-size: 0.88rem; margin: 6px 0 14px; }
+
+    /* ── MODAL ── */
+    .modal-ov {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-ov.open { display: flex; }
+    .modal {
+      background: var(--surface2); border-radius: 20px; padding: 34px;
+      max-width: 460px; width: 90%; border: 1px solid rgba(46,196,182,0.18);
+      animation: popIn .2s ease;
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(.94)} to{opacity:1;transform:scale(1)} }
+    .modal h2 { font-family: 'Fredoka One', cursive; font-size: 1.55rem; margin-bottom: 8px; }
+    .modal p { color: var(--muted); font-size: 0.88rem; margin-bottom: 18px; line-height: 1.6; }
+    .modal input[type="password"], .modal input[type="text"] {
+      width: 100%; background: var(--bg);
+      border: 1px solid rgba(46,196,182,0.25); border-radius: 10px;
+      color: var(--text); font-family: 'Space Mono', monospace;
+      font-size: 0.82rem; padding: 11px 13px; margin-bottom: 14px;
+    }
+    .modal input:focus { outline: none; border-color: var(--teal); }
+    .modal-link { color: var(--teal); font-size: 0.8rem; margin-bottom: 16px; display: block; }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-ghost {
+      background: transparent; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px; color: var(--muted); font-family: 'Nunito', sans-serif;
+      font-weight: 700; padding: 9px 20px; cursor: pointer; transition: all .15s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+    .api-indicator {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+      display: inline-block; margin-right: 5px;
+    }
+    .api-indicator.set { background: var(--teal); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface); text-align: center; padding: 28px;
+      border-top: 1px solid rgba(255,255,255,0.04); position: relative; z-index: 1;
+    }
+    footer p { color: var(--muted); font-size: 0.88rem; }
+    footer .hrt { color: var(--accent); }
+    footer .phil { color: var(--teal); font-weight: 800; }
+    footer .steph { color: var(--yellow); font-weight: 800; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--surface2); border: 1px solid rgba(46,196,182,0.3);
+      border-radius: 50px; padding: 11px 22px; font-weight: 700; font-size: 0.88rem;
+      z-index: 400; animation: toastIn .3s ease; white-space: nowrap;
+    }
+    @keyframes toastIn {
+      from{opacity:0;transform:translateX(-50%) translateY(12px)}
+      to{opacity:1;transform:translateX(-50%) translateY(0)}
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:640px){
+      nav { padding: 12px 16px; }
+      .nav-logo { font-size: 1.1rem; }
+      .nav-btn { padding: 6px 11px; font-size: 0.8rem; }
+      section { padding: 84px 16px 50px; }
+      .quiz-opts { grid-template-columns: 1fr; }
+      .games-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating BG letters -->
+<div class="float-bg" id="floatBg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goTo('home')">
+    <span class="blink-eye">👁️</span> Steph's Study Space
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="goTo('home')">Home</button>
+    <button class="nav-btn" onclick="goTo('quiz')">📚 Quiz Me</button>
+    <button class="nav-btn" onclick="goTo('games')">🎮 Games</button>
+    <button class="nav-btn api-btn" onclick="openApiModal()">
+      <span class="api-indicator" id="apiIndicator"></span>Gemini Key
+    </button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section id="home">
+  <div class="inner hero">
+    <div class="big-eye-wrap">
+      <span class="blink-eye" style="font-size:5rem">👁️</span>
+    </div>
+    <h1>
+      <span class="hi">Hey</span> <span class="name-h">Stephanie!</span><br/>
+      Your personal study space ✨
+    </h1>
+    <p>
+      Upload your optometry notes and get instant AI-powered quizzes.<br/>
+      Or take a break and play some eye-themed games. You've got this, future OD! 🩺
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="goTo('quiz')">📄 Quiz Me From My Notes</button>
+      <button class="btn-secondary" onclick="goTo('games')">🎮 Play Games</button>
+    </div>
+    <p class="made-with">
+      Made with <span class="h">❤️</span> by <span class="n">Phil</span> — just for you 💌
+    </p>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" style="display:none">
+  <div class="inner">
+    <div class="sec-title">📄 <span>Quiz</span> Me</div>
+    <p class="sec-sub">Upload your notes (PDF or TXT) and I'll generate a custom quiz for you!</p>
+
+    <!-- Upload Zone -->
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept=".pdf,.txt" />
+      <div class="upload-icon">📂</div>
+      <h3>Drop your notes here</h3>
+      <p>Supports .pdf and .txt files</p>
+    </div>
+
+    <!-- File Info -->
+    <div class="file-info" id="fileInfo" style="display:none">
+      <span class="fi-icon" id="fiIcon">📄</span>
+      <div>
+        <div class="fi-name" id="fiName"></div>
+        <div class="fi-size" id="fiSize"></div>
+      </div>
+      <button class="fi-clear" onclick="clearFile()" title="Remove file">✕</button>
+    </div>
+
+    <!-- Options -->
+    <div class="quiz-opts" id="quizOpts">
+      <div class="opt-group">
+        <label>Number of Questions</label>
+        <select id="numQ">
+          <option value="5">5 Questions</option>
+          <option value="10" selected>10 Questions</option>
+          <option value="15">15 Questions</option>
+          <option value="20">20 Questions</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>Difficulty</label>
+        <select id="difficulty">
+          <option value="easy">Easy 😊</option>
+          <option value="medium" selected>Medium 🤔</option>
+          <option value="hard">Hard 🔥</option>
+          <option value="exam-level">Exam Level 💀</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generateQuiz()" disabled>
+      ✨ Generate My Quiz
+    </button>
+
+    <!-- Error -->
+    <div class="err-box" id="errBox"></div>
+
+    <!-- Loading -->
+    <div class="loading" id="loadingDiv">
+      <div class="spin"></div>
+      <p id="loadingMsg">Reading your notes... 🔍</p>
+    </div>
+
+    <!-- Quiz Display -->
+    <div class="quiz-wrap" id="quizWrap"></div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section id="games" style="display:none">
+  <div class="inner">
+    <div class="sec-title">🎮 <span>Games</span></div>
+    <p class="sec-sub">Take a study break — optometry-style! 👓</p>
+
+    <div class="games-grid">
+      <!-- Snellen Sprint -->
+      <div class="g-card">
+        <div class="g-icon">🔤</div>
+        <h3>Snellen Sprint</h3>
+        <p>Letters shrink like an eye chart — type them before they disappear! 60 seconds on the clock.</p>
+
+        <!-- Start state -->
+        <div id="sn-start">
+          <button class="btn-primary" style="width:100%" onclick="startSnellen()">▶ Start Game</button>
+        </div>
+
+        <!-- Playing state -->
+        <div id="sn-play" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--muted)">⏱ <span id="snTimeLeft">60</span>s</span>
+            <div class="sn-stats" style="margin:0">
+              <span class="sn-pill">🏆 <span id="snScore">0</span></span>
+              <span class="sn-pill">🎯 <span id="snAcc">100</span>%</span>
+            </div>
+          </div>
+          <div class="timer-bar"><div class="timer-fill" id="snLetterBar" style="width:100%;background:var(--teal)"></div></div>
+          <div class="snellen-display">
+            <span class="snellen-letter" id="snLetter" style="font-size:72px">E</span>
+          </div>
+          <div class="snellen-input-row">
+            <input type="text" class="snellen-input" id="snInput" maxlength="2"
+              placeholder="?" autocomplete="off" oninput="handleSnInput(event)" />
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="sn-results" style="display:none" class="sn-results">
+          <div class="big-num">🏆 <span id="snFinalScore">0</span></div>
+          <div class="sn-msg" id="snRating"></div>
+          <div style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Accuracy: <span id="snFinalAcc">0</span>%</div>
+          <button class="btn-primary" onclick="startSnellen()">▶ Play Again</button>
+        </div>
+      </div>
+
+      <!-- Optometry Trivia -->
+      <div class="g-card">
+        <div class="g-icon">🧠</div>
+        <h3>OD Trivia</h3>
+        <p>Test your optometry knowledge! 20 questions from cornea to cortex. How many can you get right?</p>
+
+        <!-- Start -->
+        <div id="tr-start">
+          <button class="btn-secondary" style="width:100%;padding:13px" onclick="startTrivia()">▶ Start Trivia</button>
+        </div>
+
+        <!-- Playing -->
+        <div id="tr-play" style="display:none">
+          <div class="t-score-row">
+            <span class="t-progress" id="trProgress">Question 1 / 20</span>
+            <span class="t-score-badge">⭐ <span id="trScore">0</span> / 20</span>
+          </div>
+          <div class="t-question" id="trQuestion"></div>
+          <div class="t-options" id="trOptions"></div>
+          <div class="t-fact" id="trFact"></div>
+          <div style="margin-top:12px;text-align:right">
+            <button class="btn-ghost" id="trNext" onclick="nextTrivia()" style="display:none;font-size:.85rem;padding:7px 16px">Next →</button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="tr-results" style="display:none" class="t-results">
+          <div class="big-num">⭐ <span id="trFinalScore">0</span> / 20</div>
+          <div class="t-msg" id="trMsg"></div>
+          <button class="btn-secondary" onclick="startTrivia()">▶ Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Made with <span class="hrt">❤️</span> by <span class="phil">Phil</span> for <span class="steph">Stephanie</span> 👁️✨<br/>
+  <span style="font-size:.8rem;opacity:.6">The world's best future optometrist</span></p>
+</footer>
+
+<!-- API KEY MODAL -->
+<div class="modal-ov" id="apiModal">
+  <div class="modal">
+    <h2>🔑 Gemini API Key (Free!)</h2>
+    <p>
+      This app uses the <strong>Google Gemini API</strong> — it's <strong>100% free</strong>, no credit card needed! Paste your key below — it's only stored in your browser, never sent anywhere else.
+      <br/><br/>
+      Get your free key in 2 minutes 👇
+    </p>
+    <a class="modal-link" href="https://aistudio.google.com/app/apikey" target="_blank">→ Get your FREE key at aistudio.google.com</a>
+    <input type="password" id="apiKeyInput" placeholder="AIza..." />
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeApiModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveApiKey()">Save Key</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PDF.JS SETUP ──
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+// ── STATE ──
+let currentFile = null;
+let notesText = '';
+let currentQuiz = [];
+let quizAnswered = [];
+let quizScore = 0;
+
+// ── TRIVIA DATA ──
+const TRIVIA = [
+  {q:"What is the most common refractive error worldwide?",opts:["Hyperopia","Myopia","Astigmatism","Presbyopia"],c:1,fact:"Myopia (nearsightedness) affects over 2.6 billion people globally and is the most common refractive error."},
+  {q:"Which part of the retina provides the sharpest central vision?",opts:["Optic disc","Peripheral retina","Fovea centralis","Ora serrata"],c:2,fact:"The fovea centralis has the highest density of cone photoreceptors, enabling our sharpest detailed vision."},
+  {q:"What does IOP stand for?",opts:["Internal Ocular Pressure","Intraocular Pressure","Intrinsic Optic Pressure","Infraorbital Power"],c:1,fact:"Intraocular Pressure (IOP) is the fluid pressure inside the eye. Elevated IOP is a key risk factor for glaucoma."},
+  {q:"A patient needs a -3.00 D lens. What condition do they have?",opts:["Hyperopia","Presbyopia","Myopia","Emmetropia"],c:2,fact:"Minus (diverging) lenses correct myopia by moving the focal point back onto the retina."},
+  {q:"Which vitamin deficiency classically causes night blindness?",opts:["Vitamin C","Vitamin D","Vitamin B12","Vitamin A"],c:3,fact:"Vitamin A is essential for rhodopsin production in rod photoreceptors, which are critical for low-light vision."},
+  {q:"Which instrument measures intraocular pressure?",opts:["Ophthalmoscope","Slit lamp","Tonometer","Retinoscope"],c:2,fact:"A tonometer measures IOP. The Goldmann applanation tonometer is the clinical gold standard."},
+  {q:"What is the approximate axial length of an emmetropic adult eye?",opts:["16 mm","20 mm","24 mm","28 mm"],c:2,fact:"The average adult eye is about 24 mm long. Myopic eyes tend to have a longer axial length."},
+  {q:"Which photoreceptors are responsible for color vision?",opts:["Rods","Cones","Ganglion cells","Bipolar cells"],c:1,fact:"Cones come in three types (S, M, L) sensitive to different wavelengths, forming the basis of trichromatic color vision."},
+  {q:"What is the name of the natural 'blind spot' in the retina?",opts:["Fovea centralis","Macula lutea","Ora serrata","Optic disc"],c:3,fact:"The optic disc is where the optic nerve exits the eye — it has no photoreceptors, creating a natural blind spot."},
+  {q:"Presbyopia is primarily caused by:",opts:["Elongation of the eyeball","Corneal irregularities","Loss of lens elasticity with age","Increased IOP"],c:2,fact:"Starting around age 40, the crystalline lens loses elasticity, reducing the ability to accommodate for near vision."},
+  {q:"Which layer of the cornea has the greatest regenerative ability?",opts:["Epithelium","Bowman's layer","Stroma","Endothelium"],c:0,fact:"The corneal epithelium regenerates rapidly — it can completely replace itself in about 7 days."},
+  {q:"What does 20/20 vision mean?",opts:["You see at 20 feet what others see at 40 feet","Normal vision — you see at 20 feet what a normal person sees at 20 feet","You see twice as well as average","You can read 20 lines on a Snellen chart"],c:1,fact:"20/20 is the standard for normal visual acuity. 20/200 or worse (corrected) is the legal definition of blindness in the US."},
+  {q:"Aqueous humor is produced by the:",opts:["Iris","Ciliary body","Choroid","Cornea"],c:1,fact:"The ciliary body produces aqueous humor, which drains through the trabecular meshwork. Drainage disruption raises IOP."},
+  {q:"Which condition involves clouding of the crystalline lens?",opts:["Glaucoma","Macular degeneration","Cataract","Diabetic retinopathy"],c:2,fact:"Cataracts are the leading cause of reversible blindness worldwide and are treated with surgery."},
+  {q:"In prescription notation, 'OD' stands for:",opts:["Outer Distance","Optical Diameter","Oculus Dexter (right eye)","Oculus Dual"],c:2,fact:"OD = right eye (Oculus Dexter), OS = left eye (Oculus Sinister), OU = both eyes (Oculus Uterque)."},
+  {q:"Visual signals from the retina travel first to which brain structure?",opts:["Frontal lobe","Cerebellum","Lateral geniculate nucleus","Hippocampus"],c:2,fact:"Retinal signals travel via the optic nerve to the lateral geniculate nucleus (LGN) of the thalamus, then to visual cortex V1."},
+  {q:"Astigmatism is most often caused by:",opts:["Unequal corneal curvature","A flat crystalline lens","Excess aqueous humor","Short axial length"],c:0,fact:"Astigmatism occurs when the cornea or lens has an irregular (non-spherical) curvature, causing light to focus at multiple points."},
+  {q:"What is the primary role of rods in the retina?",opts:["Color discrimination","High-acuity central vision","Light/dark detection in low-light conditions","Refraction of incoming light"],c:2,fact:"Rods are extremely light-sensitive and responsible for scotopic (night) vision, but they don't detect color."},
+  {q:"Which medication class is first-line for lowering IOP in glaucoma?",opts:["Antihistamines","Prostaglandin analogs","ACE inhibitors","Corticosteroids"],c:1,fact:"Topical prostaglandin analogs (e.g., latanoprost) increase aqueous outflow and are now the most common first-line IOP treatment."},
+  {q:"The tough white outer coat of the eye is called the:",opts:["Cornea","Sclera","Conjunctiva","Choroid"],c:1,fact:"The sclera forms the protective outer shell of the eye. The cornea is the clear, transparent anterior portion of the outer coat."}
+];
+
+// ── NAV ──
+function goTo(id) {
+  ['home','quiz','games'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event && event.target && event.target.classList.add('active');
+  window.scrollTo(0,0);
+  // Remove active from all, re-add
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    const txt = b.textContent.toLowerCase();
+    if (
+      (id === 'home' && txt.includes('home')) ||
+      (id === 'quiz' && txt.includes('quiz')) ||
+      (id === 'games' && txt.includes('game'))
+    ) b.classList.add('active');
+  });
+}
+
+// ── FLOATING LETTERS ──
+(function() {
+  const letters = 'EOFLPZTDBCNHSVA';
+  const bg = document.getElementById('floatBg');
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'fl';
+    el.textContent = letters[Math.floor(Math.random() * letters.length)];
+    const size = 1.2 + Math.random() * 2.5;
+    el.style.cssText = `
+      left: ${Math.random() * 100}%;
+      font-size: ${size}rem;
+      animation-duration: ${10 + Math.random() * 14}s;
+      animation-delay: ${-Math.random() * 14}s;
+    `;
+    bg.appendChild(el);
+  }
+})();
+
+// ── API KEY ──
+function getApiKey() { return localStorage.getItem('steph_gemini_key') || ''; }
+function saveApiKey() {
+  const v = document.getElementById('apiKeyInput').value.trim();
+  if (!v) { showToast('⚠️ Please enter an API key'); return; }
+  localStorage.setItem('steph_gemini_key', v);
+  updateApiIndicator();
+  closeApiModal();
+  showToast('✅ API key saved!');
+  checkGenBtn();
+}
+function openApiModal() {
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('apiModal').classList.add('open');
+}
+function closeApiModal() { document.getElementById('apiModal').classList.remove('open'); }
+function updateApiIndicator() {
+  const ind = document.getElementById('apiIndicator');
+  ind.className = 'api-indicator' + (getApiKey() ? ' set' : '');
+}
+updateApiIndicator();
+
+// ── FILE UPLOAD ──
+const uploadZone = document.getElementById('uploadZone');
+const fileInput  = document.getElementById('fileInput');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault(); uploadZone.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function handleFile(f) {
+  const ext = f.name.split('.').pop().toLowerCase();
+  if (!['pdf','txt'].includes(ext)) { showToast('⚠️ Only PDF and TXT files are supported'); return; }
+  currentFile = f;
+  document.getElementById('fiIcon').textContent = ext === 'pdf' ? '📑' : '📝';
+  document.getElementById('fiName').textContent = f.name;
+  document.getElementById('fiSize').textContent = formatSize(f.size);
+  document.getElementById('fileInfo').style.display = 'flex';
+  checkGenBtn();
+}
+
+function clearFile() {
+  currentFile = null; notesText = '';
+  document.getElementById('fileInfo').style.display = 'none';
+  fileInput.value = '';
+  checkGenBtn();
+}
+
+function checkGenBtn() {
+  document.getElementById('genBtn').disabled = !(currentFile && getApiKey());
+  if (currentFile && !getApiKey()) {
+    document.getElementById('genBtn').textContent = '🔑 Set API Key First';
+  } else {
+    document.getElementById('genBtn').textContent = '✨ Generate My Quiz';
+  }
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+// ── EXTRACT TEXT ──
+async function extractText(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'txt') {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.onerror = rej;
+      r.readAsText(file);
+    });
+  }
+  // PDF
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(item => item.str).join(' ') + '\n';
+  }
+  return text;
+}
+
+// ── GENERATE QUIZ ──
+async function generateQuiz() {
+  const apiKey = getApiKey();
+  if (!apiKey) { openApiModal(); return; }
+  if (!currentFile) { showToast('⚠️ Please upload a file first'); return; }
+
+  const numQ = +document.getElementById('numQ').value;
+  const diff  = document.getElementById('difficulty').value;
+
+  // Hide prev results
+  const wrap = document.getElementById('quizWrap');
+  wrap.className = 'quiz-wrap';
+  wrap.innerHTML = '';
+  hideErr();
+
+  // Show loading
+  const loadDiv = document.getElementById('loadingDiv');
+  loadDiv.className = 'loading on';
+  document.getElementById('loadingMsg').textContent = 'Reading your notes... 📖';
+  document.getElementById('genBtn').disabled = true;
+
+  try {
+    document.getElementById('loadingMsg').textContent = 'Extracting text... 🔍';
+    notesText = await extractText(currentFile);
+
+    if (!notesText.trim()) {
+      throw new Error('Could not extract text from file. If it\'s a scanned PDF, try copying the text to a .txt file instead.');
+    }
+
+    document.getElementById('loadingMsg').textContent = `Generating ${numQ} questions with Claude AI... ✨`;
+
+    const prompt = `You are a fun and supportive study assistant helping Stephanie, an optometry student. Based on the provided notes, create ${numQ} multiple choice questions.
+
+Return ONLY a valid JSON array (no markdown, no preamble, no backticks). Each object must have:
+- "question": the question text
+- "options": array of exactly 4 answer strings
+- "correct": index (0-3) of the correct option
+- "explanation": a helpful 1-2 sentence explanation
+
+Difficulty: ${diff}
+Number of questions: ${numQ}
+
+NOTES:
+${notesText.slice(0, 12000)}`;
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 4000, temperature: 0.7 }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 400 || res.status === 403) throw new Error('Invalid API key. Get your free key at aistudio.google.com');
+      throw new Error(err.error?.message || `API error (${res.status})`);
+    }
+
+    const data = await res.json();
+    const raw = (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
+    currentQuiz = JSON.parse(clean);
+
+    loadDiv.className = 'loading';
+    quizAnswered = new Array(currentQuiz.length).fill(false);
+    quizScore = 0;
+    renderQuiz();
+    document.getElementById('quizWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (e) {
+    loadDiv.className = 'loading';
+    showErr(e.message);
+  } finally {
+    checkGenBtn();
+  }
+}
+
+// ── RENDER QUIZ ──
+function renderQuiz() {
+  const wrap = document.getElementById('quizWrap');
+  wrap.innerHTML = '';
+  wrap.className = 'quiz-wrap on';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'quiz-top';
+  header.innerHTML = `
+    <div class="q-progress" id="qProgress">Question 1 of ${currentQuiz.length}</div>
+    <div class="q-score" id="qScore">⭐ 0 / ${currentQuiz.length}</div>
+  `;
+  wrap.appendChild(header);
+
+  // Questions
+  currentQuiz.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `qcard-${qi}`;
+    card.innerHTML = `
+      <div class="q-num">Question ${qi + 1} of ${currentQuiz.length}</div>
+      <div class="q-text">${escHtml(q.question)}</div>
+      <div class="q-options" id="qopts-${qi}">
+        ${q.options.map((opt, oi) => `
+          <button class="q-opt" onclick="answerQ(${qi}, ${oi})">
+            <span class="q-label">${['A','B','C','D'][oi]}</span>
+            ${escHtml(opt)}
+          </button>
+        `).join('')}
+      </div>
+      <div class="q-explain" id="qexp-${qi}">${escHtml(q.explanation || '')}</div>
+    `;
+    wrap.appendChild(card);
+  });
+
+  // Results placeholder
+  const res = document.createElement('div');
+  res.id = 'quizResults';
+  res.style.display = 'none';
+  wrap.appendChild(res);
+}
+
+function answerQ(qi, oi) {
+  if (quizAnswered[qi]) return;
+  quizAnswered[qi] = true;
+
+  const q = currentQuiz[qi];
+  const btns = document.querySelectorAll(`#qopts-${qi} .q-opt`);
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === oi && oi !== q.correct) btn.classList.add('wrong');
+  });
+
+  if (oi === q.correct) quizScore++;
+  document.getElementById(`qexp-${qi}`).className = 'q-explain on';
+
+  // Update score
+  const answered = quizAnswered.filter(Boolean).length;
+  document.getElementById('qProgress').textContent = `Question ${answered} of ${currentQuiz.length}`;
+  document.getElementById('qScore').textContent = `⭐ ${quizScore} / ${currentQuiz.length}`;
+
+  // Check if all answered
+  if (answered === currentQuiz.length) showResults();
+}
+
+function showResults() {
+  const pct = Math.round((quizScore / currentQuiz.length) * 100);
+  let emoji = '😅', msg = 'Keep reviewing — you\'ve got this!';
+  if (pct >= 90) { emoji = '🌟'; msg = 'Incredible, Steph! You\'re basically already an OD! 👓'; }
+  else if (pct >= 75) { emoji = '🎉'; msg = 'Great work! Phil is SO proud of you! 💛'; }
+  else if (pct >= 60) { emoji = '👍'; msg = 'Solid effort! Review the ones you missed and try again.'; }
+  else if (pct >= 40) { emoji = '📖'; msg = 'Keep studying! You\'ll crush it next time.'; }
+
+  const res = document.getElementById('quizResults');
+  res.style.display = '';
+  res.innerHTML = `
+    <div class="results-card">
+      <div class="res-emoji">${emoji}</div>
+      <div class="res-score">${quizScore} / ${currentQuiz.length}</div>
+      <div class="res-label">${pct}% correct</div>
+      <div class="res-msg">${msg}</div>
+      <button class="btn-primary" onclick="generateQuiz()">🔄 Generate New Quiz</button>
+    </div>
+  `;
+  res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── SNELLEN SPRINT ──
+let snActive = false, snScore = 0, snTotal = 0, snCorrect = 0, snTimeLeft = 60;
+let snGameInterval = null, snLetterInterval = null;
+let snLetterTime = 0, snCurrentLetter = '';
+const SN_LETTERS = 'EOFLPZTD';
+
+function startSnellen() {
+  snActive = true; snScore = 0; snTotal = 0; snCorrect = 0; snTimeLeft = 60;
+  document.getElementById('sn-start').style.display = 'none';
+  document.getElementById('sn-results').style.display = 'none';
+  document.getElementById('sn-play').style.display = 'block';
+  document.getElementById('snScore').textContent = '0';
+  document.getElementById('snAcc').textContent = '100';
+  document.getElementById('snTimeLeft').textContent = '60';
+  document.getElementById('snInput').value = '';
+  document.getElementById('snInput').focus();
+
+  clearInterval(snGameInterval);
+  snGameInterval = setInterval(() => {
+    snTimeLeft--;
+    document.getElementById('snTimeLeft').textContent = snTimeLeft;
+    if (snTimeLeft <= 0) endSnellen();
+  }, 1000);
+
+  nextSnLetter();
+}
+
+function nextSnLetter() {
+  if (!snActive) return;
+  clearInterval(snLetterInterval);
+  snCurrentLetter = SN_LETTERS[Math.floor(Math.random() * SN_LETTERS.length)];
+  const startSize = Math.max(22, 72 - Math.floor(snScore / 5) * 2);
+  const el = document.getElementById('snLetter');
+  el.textContent = snCurrentLetter;
+  el.style.fontSize = startSize + 'px';
+  el.style.color = '#111';
+  snLetterTime = 3.0;
+  updateSnBar(1);
+  snLetterInterval = setInterval(() => {
+    snLetterTime -= 0.05;
+    const ratio = Math.max(0, snLetterTime / 3.0);
+    updateSnBar(ratio);
+    el.style.fontSize = Math.max(12, startSize * (0.35 + ratio * 0.65)) + 'px';
+    if (snLetterTime <= 0) {
+      clearInterval(snLetterInterval);
+      snTotal++;
+      el.style.color = '#e63946';
+      document.getElementById('snInput').value = '';
+      updateSnStats();
+      setTimeout(() => { if (snActive) nextSnLetter(); }, 450);
+    }
+  }, 50);
+}
+
+function handleSnInput(e) {
+  if (!snActive) return;
+  const v = e.target.value.toUpperCase();
+  if (!v) return;
+  const typed = v[v.length - 1];
+  clearInterval(snLetterInterval);
+  snTotal++;
+  const el = document.getElementById('snLetter');
+  if (typed === snCurrentLetter) {
+    snCorrect++;
+    snScore += 10;
+    el.style.color = '#2ec4b6';
+    el.textContent = '✓';
+  } else {
+    el.style.color = '#e63946';
+    el.textContent = '✗';
+  }
+  e.target.value = '';
+  updateSnStats();
+  setTimeout(() => { if (snActive) nextSnLetter(); }, 280);
+}
+
+function updateSnBar(ratio) {
+  const fill = document.getElementById('snLetterBar');
+  fill.style.width = (ratio * 100) + '%';
+  fill.style.background = ratio > 0.5 ? 'var(--teal)' : ratio > 0.25 ? 'var(--yellow)' : 'var(--accent)';
+}
+
+function updateSnStats() {
+  document.getElementById('snScore').textContent = snScore;
+  const acc = snTotal > 0 ? Math.round((snCorrect / snTotal) * 100) : 100;
+  document.getElementById('snAcc').textContent = acc;
+}
+
+function endSnellen() {
+  snActive = false;
+  clearInterval(snGameInterval); clearInterval(snLetterInterval);
+  document.getElementById('sn-play').style.display = 'none';
+  document.getElementById('sn-results').style.display = 'block';
+  const acc = snTotal > 0 ? Math.round((snCorrect / snTotal) * 100) : 0;
+  let rating = '😢 Keep practicing!';
+  if (acc >= 90) rating = '🌟 Perfect! Phil says you\'re amazing!';
+  else if (acc >= 75) rating = '🎉 Great job, future OD!';
+  else if (acc >= 55) rating = '👍 Solid! Keep that eye sharp.';
+  document.getElementById('snFinalScore').textContent = snScore;
+  document.getElementById('snFinalAcc').textContent = acc;
+  document.getElementById('snRating').textContent = rating;
+}
+
+// ── OPTOMETRY TRIVIA ──
+let trIdx = 0, trScore = 0, trOrder = [];
+
+function startTrivia() {
+  trIdx = 0; trScore = 0;
+  trOrder = [...Array(TRIVIA.length).keys()].sort(() => Math.random() - 0.5);
+  document.getElementById('tr-start').style.display = 'none';
+  document.getElementById('tr-results').style.display = 'none';
+  document.getElementById('tr-play').style.display = 'block';
+  renderTrivia();
+}
+
+function renderTrivia() {
+  const q = TRIVIA[trOrder[trIdx]];
+  document.getElementById('trProgress').textContent = `Question ${trIdx + 1} / ${TRIVIA.length}`;
+  document.getElementById('trScore').textContent = `${trScore} / ${trIdx}`;
+  document.getElementById('trQuestion').textContent = q.q;
+  document.getElementById('trFact').className = 't-fact';
+  document.getElementById('trFact').textContent = '';
+  document.getElementById('trNext').style.display = 'none';
+
+  const opts = document.getElementById('trOptions');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 't-opt';
+    b.textContent = opt;
+    b.onclick = () => answerTrivia(i);
+    opts.appendChild(b);
+  });
+}
+
+function answerTrivia(chosen) {
+  const q = TRIVIA[trOrder[trIdx]];
+  const btns = document.querySelectorAll('.t-opt');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.c) b.classList.add('correct');
+    else if (i === chosen && chosen !== q.c) b.classList.add('wrong');
+  });
+  if (chosen === q.c) trScore++;
+  document.getElementById('trScore').textContent = `${trScore} / ${trIdx + 1}`;
+  const fact = document.getElementById('trFact');
+  fact.textContent = '💡 ' + q.fact;
+  fact.className = 't-fact on';
+  document.getElementById('trNext').style.display = 'inline-block';
+}
+
+function nextTrivia() {
+  trIdx++;
+  if (trIdx >= TRIVIA.length) {
+    showTriviaResults();
+  } else {
+    renderTrivia();
+  }
+}
+
+function showTriviaResults() {
+  document.getElementById('tr-play').style.display = 'none';
+  document.getElementById('tr-results').style.display = 'block';
+  document.getElementById('trFinalScore').textContent = trScore;
+  const pct = Math.round((trScore / TRIVIA.length) * 100);
+  let msg = '😅 Keep studying, Steph!';
+  if (pct >= 90) msg = '🌟 Absolutely brilliant! Future OD for sure!';
+  else if (pct >= 75) msg = '🎉 Phil says you\'re incredible! Great score!';
+  else if (pct >= 60) msg = '👍 Good work! A bit more revision and you\'ll ace it!';
+  else if (pct >= 40) msg = '📚 Keep studying — you\'re getting there!';
+  document.getElementById('trMsg').textContent = msg;
+}
+
+// ── TOAST ──
+function showToast(msg, dur = 2800) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), dur);
+}
+
+// ── UTILS ──
+function showErr(msg) {
+  const b = document.getElementById('errBox');
+  b.textContent = '⚠️ ' + msg;
+  b.className = 'err-box on';
+}
+function hideErr() {
+  document.getElementById('errBox').className = 'err-box';
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──
+// Check if API key set, show prompt on quiz section visit
+document.querySelector('[onclick="goTo(\'quiz\')"]') && (() => {
+  const orig = goTo;
+})();
+
+// Keyboard shortcut for Snellen (just focus if playing)
+document.addEventListener('keydown', e => {
+  if (snActive) {
+    const inp = document.getElementById('snInput');
+    if (document.activeElement !== inp) inp.focus();
+  }
+});
+
+// Close modal on overlay click
+document.getElementById('apiModal').addEventListener('click', function(e) {
+  if (e.target === this) closeApiModal();
+});
+</script>
+</body>
+</html>
